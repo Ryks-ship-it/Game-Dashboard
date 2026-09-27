@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro RPG Terminal</title>
+    <style>
+        /* ========================================================
+           1. STYLES SECTION (Where the look/colors are set)
+           ======================================================== */
+        body {
+            background-color: #031203;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            border: 3px solid #33ff33;
+            box-shadow: 0 0 15px #33ff33;
+            padding: 20px;
+            background-color: #051d05;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px dashed #33ff33;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .story-window {
+            border: 1px solid #33ff33;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #020c02;
+        }
+
+        .sidebar {
+            border: 1px solid #33ff33;
+            padding: 15px;
+            background-color: #020c02;
+        }
+
+        .sidebar ul {
+            list-style-type: '▶ ';
+            padding-left: 20px;
+        }
+
+        .controls {
+            margin-top: 20px;
+            border-top: 2px dashed #33ff33;
+            padding-top: 25px;
+        }
+
+        .btn-group {
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #33ff33;
+            color: #031203;
+            border: none;
+            padding: 8px 15px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background-color: #ffffff;
+            box-shadow: 0 0 8px #ffffff;
+        }
+
+        input[type="text"] {
+            background-color: #020c02;
+            border: 1px solid #33ff33;
+            color: #33ff33;
+            padding: 8px;
+            width: 60%;
+            font-family: inherit;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container">
+        <header>
+            <h1>⚡ TERMINAL_QUEST v1.0.4 ⚡</h1>
+            <p>SYSTEM STATUS: ONLINE | LOCATION: DARK DUNGEON</p>
+        </header>
+
+        <div class="layout">
+            <!-- ========================================================
+               2. HTML BODY SECTION (The parts you see on screen)
+               ======================================================== -->
+            <!-- Notice the id="story-box" right here. The JavaScript looks for this! -->
+            <main class="story-window" id="story-box">
+                <p>[LOG: 18:07:32] You wake up on a cold stone floor. The air smells of damp moss and old iron.</p>
+                <p>A flickering torch hangs on the wall to your left, barely illuminating two paths ahead: a heavy
+                    wooden door or a dark, echoing cave tunnel.</p>
+                <p><strong>What will you do?</strong></p>
+
+                <!-- These buttons trigger the script below when clicked -->
+                <div class="btn-group">
+                    <button type="button" onclick="makeChoice(1)">Open Wooden Door</button>
+                    <button type="button" onclick="makeChoice(2)">Enter Dark Tunnel</button>
+                    <button type="button" onclick="makeChoice(3)">Search the Room</button>
+                </div>
+            </main>
+
+            <aside class="sidebar">
+                <h3>📊 STATS</h3>
+                <p>HP: 100/100</p>
+                <p>GOLD: 15</p>
+
+                <h3>🎒 INVENTORY</h3>
+                <ul>
+                    <li>Rusty Dagger</li>
+                    <li>Health Potion</li>
+                    <li>Old Map Piece</li>
+                </ul>
+            </aside>
+        </div>
+
+        <footer class="controls">
+            <!-- Command Console Input -->
+            <form action="#" onsubmit="event.preventDefault(); handleConsoleCommand();">
+                <label for="command">&gt; ENTER COMMAND: </label>
+                <input type="text" id="command" placeholder="type 'look' or 'help'..." autocomplete="off">
+                <button type="submit">EXECUTE</button>
+            </form>
+        </footer>
+    </div>
+
+    <!-- ========================================================
+       3. JAVASCRIPT SECTION (The Logic / If-Then Engine)
+       ======================================================== -->
+    <script>
+        // This function handles the button clicks using IF/ELSE
+        function makeChoice(choiceNumber) {
+            const storyBox = document.getElementById('story-box');
+
+            if (choiceNumber === 1) {
+                storyBox.innerHTML = `
+                    <p>[LOG: ROOM_02] The heavy wooden door creaks open violently.</p>
+                    <p>You step into a brightly lit banquet hall filled with gold coins, but a giant sleeping dragon blocks the exit!</p>
+                    <p><strong>What will you do?</strong></p>
+                    <br>
+                    <button type="button" onclick="makeChoice(4)">Sneak past the dragon</button>
+                    <button type="button" onclick="makeChoice(7)">Run back to the start</button>
+                `;
+            }
+            else if (choiceNumber === 2) {
+                storyBox.innerHTML = `
+                    <p>[LOG: ROOM_03] You venture into the freezing dark tunnel.</p>
+                    <p>A swarm of bats flies out of the shadows, causing you to trip and lose 10 HP!</p>
+                    <p><strong>What is your next move?</strong></p>
+                    <br>
+                    <button type="button" onclick="makeChoice(5)">Run deeper into the dark</button>
+                    <button type="button" onclick="makeChoice(7)">Retreat to safety</button>
+                `;
+            }
+            else if (choiceNumber === 3) {
+                storyBox.innerHTML = `
+                    <p>[LOG: ACTION] You scour the loose stones on the floor.</p>
+                    <p>Hidden beneath some damp moss, you discover a glowing silver key!</p>
+                    <p><em>(Your inventory has been updated)</em></p>
+                    <br>
+                    <button type="button" onclick="makeChoice(7)">Go back to the main room</button>
+                `;
+            }
+            else if (choiceNumber === 4) {
+                storyBox.innerHTML = `
+                    <p>[LOG: GAME OVER] The dragon opens one massive eye, catches you sneaking, and turns you to ash. 🔥</p>
+                    <br>
+                    <button type="button" onclick="makeChoice(7)">Try Again</button>
+                `;
+            }
+            else if (choiceNumber === 5) {
+                storyBox.innerHTML = `
+                    <p>[LOG: VICTORY] You successfully naviagted the dark tunnel and found the exit to the surface! You win! 🎉</p>
+                    <br>
+                    <button type="button" onclick="makeChoice(7)">Play Again</button>
+                `;
+            }
+            else if (choiceNumber === 7) {
+                // Resets back to the very starting point
+                storyBox.innerHTML = `
+                    <p>[LOG: 18:07:32] You wake up on a cold stone floor. The air smells of damp moss and old iron.</p>
+                    <p>A flickering torch hangs on the wall to your left, barely illuminating two paths ahead: a heavy wooden door or a dark, echoing cave tunnel.</p>
+                    <p><strong>What will you do?</strong></p>
+                    <div class="btn-group">
+                        <button type="button" onclick="makeChoice(1)">Open Wooden Door</button>
+                        <button type="button" onclick="makeChoice(2)">Enter Dark Tunnel</button>
+                        <button type="button" onclick="makeChoice(3)">Search the Room</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Quick function to handle text typed into the bottom command bar
+        function handleConsoleCommand() {
+            const inputField = document.getElementById('command');
+            const userText = inputField.value.toLowerCase().trim();
+
+            if (userText === "look") {
+                alert("You look closely at the walls and notice ancient runes scratched into the stone.");
+            } else if (userText === "help") {
+                alert("Try clicking the choice buttons or typing commands like 'look'.");
+            } else {
+                alert("Unknown command: '" + userText + "'. Try typing 'look' or 'help'.");
+            }
+
+            inputField.value = ""; // Clears the text box
+        }
+    </script>
+
+</body>
+
+</html>

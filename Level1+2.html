@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level Terminal Quest</title>
+    <style>
+        body {
+            background-color: #031203;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            border: 3px solid #33ff33;
+            box-shadow: 0 0 15px #33ff33;
+            padding: 20px;
+            background-color: #051d05;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px dashed #33ff33;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .story-window {
+            border: 1px solid #33ff33;
+            padding: 15px;
+            height: 320px;
+            overflow-y: auto;
+            background-color: #020c02;
+        }
+
+        .sidebar {
+            border: 1px solid #33ff33;
+            padding: 15px;
+            background-color: #020c02;
+        }
+
+        .sidebar ul {
+            list-style-type: '▶ ';
+            padding-left: 20px;
+        }
+
+        .controls {
+            margin-top: 20px;
+            border-top: 2px dashed #33ff33;
+            padding-top: 25px;
+        }
+
+        .btn-group {
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #33ff33;
+            color: #031203;
+            border: none;
+            padding: 8px 15px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background-color: #ffffff;
+            box-shadow: 0 0 8px #ffffff;
+        }
+
+        input[type="text"] {
+            background-color: #020c02;
+            border: 1px solid #33ff33;
+            color: #33ff33;
+            padding: 8px;
+            width: 60%;
+            font-family: inherit;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container">
+        <header>
+            <h1>⚡ TERMINAL_QUEST v2.0.0 ⚡</h1>
+            <!-- Added id="game-status" so JavaScript can update the active location/level -->
+            <p id="game-status">SYSTEM STATUS: ONLINE | LOCATION: DUNGEON CELL</p>
+        </header>
+
+        <div class="layout">
+            <main class="story-window" id="story-box">
+                <p>[LOG: LEVEL 1] You wake up locked inside a cold stone dungeon cell. The guard is asleep at the desk.
+                </p>
+                <p>You spot a loose bobby pin on the floor, and the keys are dangling loosely from the guard's belt
+                    loop.</p>
+                <p><strong>How will you escape to the next level?</strong></p>
+
+                <div class="btn-group">
+                    <button type="button" onclick="handleLevelOne(1)">Pick lock with bobby pin</button>
+                    <button type="button" onclick="handleLevelOne(2)">Steal the keys quietly</button>
+                    <button type="button" onclick="handleLevelOne(3)">Attempt to break cell door</button>
+                </div>
+            </main>
+
+            <aside class="sidebar">
+                <h3>📊 STATS</h3>
+                <!-- Added IDs so the stats update visually -->
+                <p>CURRENT LEVEL: <span id="stat-level">1</span></p>
+                <p>HP: 100/100</p>
+                <p>GOLD: 0</p>
+
+                <h3>🎒 INVENTORY</h3>
+                <ul id="inventory-list">
+                    <li>Empty Pockets</li>
+                </ul>
+            </aside>
+        </div>
+
+        <footer class="controls">
+            <form action="#" onsubmit="event.preventDefault();">
+                <label for="command">&gt; ENTER COMMAND: </label>
+                <input type="text" id="command" placeholder="Console offline..." disabled autocomplete="off">
+                <button type="submit" disabled>EXECUTE</button>
+            </form>
+        </footer>
+    </div>
+
+    <script>
+        // Game State Variables (These track data globally across pages/levels)
+        let currentLevel = 1;
+
+        // --- LEVEL 1 ENGINE ---
+        function handleLevelOne(choice) {
+            const storyBox = document.getElementById('story-box');
+
+            if (choice === 1) {
+                // Wrong choice! Game Over.
+                storyBox.innerHTML = `
+                    <p>[LOG: FAIL] The bobby pin snaps loudly inside the lock! 🗝️❌</p>
+                    <p>The guard wakes up, realizes what you tried to do, and throws you into maximum security.</p>
+                    <br>
+                    <button type="button" onclick="resetGame()">Restart Level 1</button>
+                `;
+            }
+            else if (choice === 3) {
+                // Wrong choice! Game Over.
+                storyBox.innerHTML = `
+                    <p>[LOG: FAIL] You attempt to break the cell door, but you sneeze very loadly and alert the guard. The guard throws you into maximum security.</p>
+                    <br>
+                    <button type="button" onclick="resetGame()">Restart Level 1</button>
+                `;
+            }
+            else if (choice === 2) {
+                // Correct Choice! Advance to Level 2.
+                currentLevel = 2;
+
+                // 1. Update the UI Stats on the right panel
+                document.getElementById('stat-level').innerText = "2";
+                document.getElementById('game-status').innerText = "SYSTEM STATUS: ONLINE | LOCATION: CASTLE COURTYARD";
+                document.getElementById('inventory-list').innerHTML = "<li>Guard's Keys</li><li>Stolen Gold Pouch</li>";
+
+                // 2. Load Level 2 content straight into the story window
+                storyBox.innerHTML = `
+                    <p>🎉 [LEVEL 1 PASSED] You successfully snagged the keys, unlocked the door, and slipped past the guard!</p>
+                    <hr style="border: 1px dashed #33ff33; margin: 15px 0;">
+                    <p><strong>[WELCOME TO LEVEL 2: CASTLE COURTYARD]</strong></p>
+                    <p>You emerge under the night sky. High stone walls surround you. Two massive searchlights scan the courtyard.</p>
+                    <p>To your left is a horse carriage about to exit the main gates. To your right is an open sewer grate leading out to the moat.</p>
+                    <p><strong>What is your escape plan now?</strong></p>
+                    <br>
+                    <div class="btn-group">
+                        <button type="button" onclick="handleLevelTwo(1)">Sneak into the carriage</button>
+                        <button type="button" onclick="handleLevelTwo(2)">Dive down the sewer grate</button>
+                    </div>
+                `;
+            }
+        }
+
+        // --- LEVEL 2 ENGINE ---
+        function handleLevelTwo(choice) {
+            const storyBox = document.getElementById('story-box');
+
+            if (choice === 1) {
+                // Level 2 Fail
+                storyBox.innerHTML = `
+                    <p>[LOG: FAIL] You dive into the carriage, but it's full of royal guards! You are caught immediately. 👮‍♂️</p>
+                    <br>
+                    <button type="button" onclick="resetGame()">Restart Game</button>
+                `;
+            }
+            else if (choice === 2) {
+                // Complete Game Victory!
+                storyBox.innerHTML = `
+                    <p>🏆 [LEVEL 2 PASSED] You drop down the sewer grate, splash safely into the castle moat, and swim away to ultimate freedom!</p>
+                    <h2>👑 YOU HAVE BEATEN THE GAME! 👑</h2>
+                    <p>Thanks for playing Terminal Quest.</p>
+                    <br>
+                    <button type="button" onclick="resetGame()">Play Again</button>
+                `;
+            }
+        }
+
+        // --- RESET ENGINE ---
+        function resetGame() {
+            currentLevel = 1;
+
+            // Reset Stats visual elements
+            document.getElementById('stat-level').innerText = "1";
+            document.getElementById('game-status').innerText = "SYSTEM STATUS: ONLINE | LOCATION: DUNGEON CELL";
+            document.getElementById('inventory-list').innerHTML = "<li>Empty Pockets</li>";
+
+            // Reset Story block back to the setup text
+            document.getElementById('story-box').innerHTML = `
+                <p>[LOG: LEVEL 1] You wake up locked inside a cold stone dungeon cell. The guard is asleep at the desk.</p>
+                <p>You spot a loose bobby pin on the floor, and the keys are dangling loosely from the guard's belt loop.</p>
+                <p><strong>How will you escape to the next level?</strong></p>
+                
+                <div class="btn-group">
+                    <button type="button" onclick="handleLevelOne(1)">Pick lock with bobby pin</button>
+                    <button type="button" onclick="handleLevelOne(2)">Steal the keys quietly</button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>
